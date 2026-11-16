@@ -20,7 +20,6 @@ const socialLinks = [
 const quickLinks = [
   { label: 'Home', to: '/' },
   { label: 'About Us', to: '/about-us' },
-  { label: 'Products', to: '/products' },
   { label: 'Contact Us', to: '/contact' },
 ]
 
@@ -60,9 +59,9 @@ function Footer() {
                 </a>
               </li>
               <li>
-                <a href="mailto:malagu4@yahoo.com" className="contact-link">
+                <a href="mailto:michael@globalretirementfundsinc.com" className="contact-link">
                   <MailIcon className="icon-xs" />
-                  malagu4@yahoo.com
+                  michael@globalretirementfundsinc.com
                 </a>
               </li>
             </ul>

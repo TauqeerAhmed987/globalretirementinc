@@ -76,7 +76,7 @@ function TermsConditions() {
             <p>
               If you have any questions about these Terms &amp; Conditions,
               please contact us at{' '}
-              <a href="mailto:malagu4@yahoo.com">malagu4@yahoo.com</a> or
+              <a href="mailto:michael@globalretirementfundsinc.com">michael@globalretirementfundsinc.com</a> or
               call +1 780 531 6230.
             </p>
           </Reveal>

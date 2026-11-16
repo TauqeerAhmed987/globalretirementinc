@@ -47,7 +47,7 @@ function Hero() {
             transition={{ duration: 0.7, delay: 0.3 }}
             className="hero__actions"
           >
-            <Button to="/products">Get Started</Button>
+            <Button to="/contact">Get Started</Button>
             <Button to="/about-us" variant="outline">
               Learn More
             </Button>

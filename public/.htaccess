@@ -1,0 +1,12 @@
+# React (single-page app) routing for Apache / cPanel.
+# Real files (index.html, assets, contact.php) are served as-is;
+# every other path (/about-us, /contact, ...) falls back to index.html
+# so refreshing a page doesn't give a 404.
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>

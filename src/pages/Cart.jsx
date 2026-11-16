@@ -32,7 +32,7 @@ function Cart() {
                 to confirm details and complete your payment.
               </p>
               <div className="order-success__cta">
-                <Button to="/products" variant="dark">
+                <Button to="/" variant="dark">
                   Continue Shopping
                 </Button>
               </div>

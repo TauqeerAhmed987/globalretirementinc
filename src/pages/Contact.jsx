@@ -16,8 +16,8 @@ const contactInfo = [
   },
   {
     label: 'Email Us',
-    value: 'malagu4@yahoo.com',
-    href: 'mailto:malagu4@yahoo.com',
+    value: 'michael@globalretirementfundsinc.com',
+    href: 'mailto:michael@globalretirementfundsinc.com',
     Icon: MailIcon,
   },
   {
@@ -30,19 +30,49 @@ const contactInfo = [
 
 const initialForm = { name: '', email: '', phone: '', message: '' }
 
+// Submissions go to public/contact.php on the cPanel server, which emails them
+// to michael@globalretirementfundsinc.com. PHP doesn't run on the Vite dev
+// server, so this only works once the built site is uploaded to cPanel.
+const FORM_ENDPOINT = '/contact.php'
+
 function Contact() {
   const [form, setForm] = useState(initialForm)
-  const [submitted, setSubmitted] = useState(false)
+  // 'idle' | 'sending' | 'success' | 'error'
+  const [status, setStatus] = useState('idle')
+  // Hidden anti-spam field; humans never see or fill it.
+  const [honeypot, setHoneypot] = useState('')
 
   const handleChange = (event) => {
     const { name, value } = event.target
     setForm((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    setSubmitted(true)
-    setForm(initialForm)
+    setStatus('sending')
+
+    try {
+      const response = await fetch(FORM_ENDPOINT, {
+        method: 'POST',
+        // Don't leave the visitor waiting forever if the service is slow.
+        signal: AbortSignal.timeout(15000),
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({ ...form, website: honeypot }),
+      })
+      const result = await response.json().catch(() => ({}))
+
+      if (!response.ok || result.success !== true) {
+        throw new Error(result.message || 'Submission failed')
+      }
+
+      setStatus('success')
+      setForm(initialForm)
+    } catch {
+      setStatus('error')
+    }
   }
 
   return (
@@ -86,10 +116,16 @@ function Contact() {
 
             <Reveal x={40} y={0} delay={0.1}>
               <form onSubmit={handleSubmit} className="contact-form">
-                {submitted && (
-                  <p className="form-success">
+                {status === 'success' && (
+                  <p className="form-success" role="status">
                     Thank you! Your message has been received — our team will
                     get back to you shortly.
+                  </p>
+                )}
+                {status === 'error' && (
+                  <p className="form-error" role="alert">
+                    Sorry, your message could not be sent. Please try again or
+                    email us directly at michael@globalretirementfundsinc.com.
                   </p>
                 )}
 
@@ -153,8 +189,23 @@ function Contact() {
                   />
                 </div>
 
-                <button type="submit" className="form-submit btn">
-                  Send Message
+                <input
+                  type="text"
+                  name="website"
+                  value={honeypot}
+                  onChange={(event) => setHoneypot(event.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  style={{ position: 'absolute', left: '-9999px' }}
+                />
+
+                <button
+                  type="submit"
+                  className="form-submit btn"
+                  disabled={status === 'sending'}
+                >
+                  {status === 'sending' ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             </Reveal>
