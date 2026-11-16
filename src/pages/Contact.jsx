@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import Container from '../components/common/Container.jsx'
 import PageBanner from '../components/common/PageBanner.jsx'
 import Reveal from '../components/common/Reveal.jsx'
 import FaqAccordion from '../components/common/FaqAccordion.jsx'
+import SuccessPopup from '../components/common/SuccessPopup.jsx'
 import { PhoneIcon, MailIcon, MapPinIcon } from '../components/common/icons.jsx'
 import { faqs } from '../data/faqs.js'
 import bannerImage from '../assets/site-image/sect-fur-image.jpeg'
@@ -30,15 +31,19 @@ const contactInfo = [
 
 const initialForm = { name: '', email: '', phone: '', message: '' }
 
-// Submissions go to public/contact.php on the cPanel server, which emails them
-// to michael@globalretirementfundsinc.com. PHP doesn't run on the Vite dev
-// server, so this only works once the built site is uploaded to cPanel.
-const FORM_ENDPOINT = '/contact.php'
+// Submissions are emailed via Web3Forms (web3forms.com). The access key is
+// public by design: it can only deliver to the inbox set in the Web3Forms
+// dashboard, so it's safe to ship in frontend code. Works on any host
+// (Vercel, cPanel, localhost) with no backend.
+const FORM_ENDPOINT = 'https://api.web3forms.com/submit'
+const WEB3FORMS_ACCESS_KEY = '85dcc53b-38c5-4b64-bec7-17fca135147a'
 
 function Contact() {
   const [form, setForm] = useState(initialForm)
   // 'idle' | 'sending' | 'success' | 'error'
   const [status, setStatus] = useState('idle')
+  // Reason returned by the form service, shown under the error message.
+  const [errorDetail, setErrorDetail] = useState('')
   // Hidden anti-spam field; humans never see or fill it.
   const [honeypot, setHoneypot] = useState('')
 
@@ -46,6 +51,8 @@ function Contact() {
     const { name, value } = event.target
     setForm((prev) => ({ ...prev, [name]: value }))
   }
+
+  const closePopup = useCallback(() => setStatus('idle'), [])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -60,7 +67,16 @@ function Contact() {
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-        body: JSON.stringify({ ...form, website: honeypot }),
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          subject: `New Contact Form Message from ${form.name}`,
+          from_name: 'Global Retirement Funds Website',
+          name: form.name,
+          email: form.email,
+          phone: form.phone || 'Not provided',
+          message: form.message,
+          botcheck: honeypot,
+        }),
       })
       const result = await response.json().catch(() => ({}))
 
@@ -70,13 +86,26 @@ function Contact() {
 
       setStatus('success')
       setForm(initialForm)
-    } catch {
+    } catch (error) {
+      console.error('[contact form] submission failed:', error)
+      setErrorDetail(
+        error?.name === 'TimeoutError'
+          ? 'The request timed out.'
+          : error?.message || '',
+      )
       setStatus('error')
     }
   }
 
   return (
     <>
+      <SuccessPopup
+        open={status === 'success'}
+        onClose={closePopup}
+        title="Thank You!"
+        message="Your message has been sent successfully. Our team will get back to you shortly."
+      />
+
       <PageBanner
         title="Contact Us"
         subtitle="Reach out today and let our team guide you with clear and practical solutions for your project needs."
@@ -116,16 +145,15 @@ function Contact() {
 
             <Reveal x={40} y={0} delay={0.1}>
               <form onSubmit={handleSubmit} className="contact-form">
-                {status === 'success' && (
-                  <p className="form-success" role="status">
-                    Thank you! Your message has been received — our team will
-                    get back to you shortly.
-                  </p>
-                )}
                 {status === 'error' && (
                   <p className="form-error" role="alert">
                     Sorry, your message could not be sent. Please try again or
                     email us directly at michael@globalretirementfundsinc.com.
+                    {errorDetail && (
+                      <span className="form-error__detail">
+                        Reason: {errorDetail}
+                      </span>
+                    )}
                   </p>
                 )}
 
@@ -191,7 +219,7 @@ function Contact() {
 
                 <input
                   type="text"
-                  name="website"
+                  name="botcheck"
                   value={honeypot}
                   onChange={(event) => setHoneypot(event.target.value)}
                   tabIndex={-1}
