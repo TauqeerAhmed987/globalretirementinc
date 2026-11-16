@@ -10,7 +10,6 @@ import logo from '../../assets/site-image/gl-Photoroom-logo.png'
 const navLinks = [
   { label: 'Home', to: '/' },
   { label: 'About Us', to: '/about-us' },
-  { label: 'Products', to: '/products' },
   { label: 'Contact Us', to: '/contact' },
 ]
 
@@ -59,7 +58,7 @@ function Header() {
                 <span className="cart-badge icon-badge">{totalItems}</span>
               )}
             </NavLink>
-            <Button to="/products" className="btn-sm">
+            <Button to="/contact" className="btn-sm">
               Get Started
             </Button>
           </div>
@@ -117,7 +116,7 @@ function Header() {
                     {link.label}
                   </NavLink>
                 ))}
-                <Button to="/products" className="btn--block fluid-mt-3xs">
+                <Button to="/contact" className="btn--block fluid-mt-3xs">
                   Get Started
                 </Button>
               </nav>

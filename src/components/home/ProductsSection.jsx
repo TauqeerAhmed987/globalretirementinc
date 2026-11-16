@@ -1,5 +1,4 @@
 import Container from '../common/Container.jsx'
-import Button from '../common/Button.jsx'
 import Reveal from '../common/Reveal.jsx'
 import productOne from '../../assets/site-image/producet-one.jpeg'
 import productTwo from '../../assets/site-image/producet-two.jpeg'
@@ -50,12 +49,6 @@ function ProductsSection() {
             </Reveal>
           ))}
         </div>
-
-        <Reveal className="products-more" delay={0.2}>
-          <Button to="/products" variant="dark">
-            More Products
-          </Button>
-        </Reveal>
       </Container>
     </section>
   )
