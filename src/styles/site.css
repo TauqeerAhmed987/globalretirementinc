@@ -1471,6 +1471,72 @@ select {
   opacity: 0.6;
   cursor: not-allowed;
 }
+.form-error__detail {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8em;
+  opacity: 0.85;
+}
+/* Success popup (contact form) */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(15, 31, 46, 0.6);
+  backdrop-filter: blur(3px);
+}
+.popup-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 20px;
+  background: var(--color-white);
+  padding: 40px 28px 32px;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(15, 31, 46, 0.3);
+}
+.popup-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background: var(--color-green);
+  color: var(--color-white);
+  box-shadow: 0 0 0 10px rgba(125, 193, 66, 0.18);
+}
+.popup-check__icon {
+  width: 42px;
+  height: 42px;
+}
+.popup-title {
+  margin: 0 0 10px;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-heading);
+}
+.popup-message {
+  margin: 0 0 24px;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--color-text);
+}
+.popup-btn {
+  min-width: 140px;
+  border-radius: 999px;
+  background: var(--color-orange);
+  color: var(--color-dark);
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+.popup-btn:hover {
+  background: var(--color-orange-light);
+}
 .form-error {
   border-radius: 8px;
   background: #fef2f2;
