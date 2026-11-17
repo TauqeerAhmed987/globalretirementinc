@@ -36,7 +36,8 @@ const initialForm = { name: '', email: '', phone: '', message: '' }
 // dashboard, so it's safe to ship in frontend code. Works on any host
 // (Vercel, cPanel, localhost) with no backend.
 const FORM_ENDPOINT = 'https://api.web3forms.com/submit'
-const WEB3FORMS_ACCESS_KEY = '85dcc53b-38c5-4b64-bec7-17fca135147a'
+// Key registered to michael@globalretirementfundsinc.com.
+const WEB3FORMS_ACCESS_KEY = '9d3208d6-fc22-49b5-b4a7-c7f697d66778'
 
 function Contact() {
   const [form, setForm] = useState(initialForm)
@@ -45,7 +46,7 @@ function Contact() {
   // Reason returned by the form service, shown under the error message.
   const [errorDetail, setErrorDetail] = useState('')
   // Hidden anti-spam field; humans never see or fill it.
-  const [honeypot, setHoneypot] = useState('')
+  const [honeypot, setHoneypot] = useState(false)
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -217,15 +218,15 @@ function Contact() {
                   />
                 </div>
 
+                {/* Checkbox (not text) so browser autofill never ticks it. */}
                 <input
-                  type="text"
+                  type="checkbox"
                   name="botcheck"
-                  value={honeypot}
-                  onChange={(event) => setHoneypot(event.target.value)}
+                  checked={honeypot}
+                  onChange={(event) => setHoneypot(event.target.checked)}
                   tabIndex={-1}
-                  autoComplete="off"
                   aria-hidden="true"
-                  style={{ position: 'absolute', left: '-9999px' }}
+                  style={{ display: 'none' }}
                 />
 
                 <button
