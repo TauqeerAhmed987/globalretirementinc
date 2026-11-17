@@ -36,7 +36,8 @@ const initialForm = { name: '', email: '', phone: '', message: '' }
 // dashboard, so it's safe to ship in frontend code. Works on any host
 // (Vercel, cPanel, localhost) with no backend.
 const FORM_ENDPOINT = 'https://api.web3forms.com/submit'
-// Key registered to michael@globalretirementfundsinc.com.
+// Key registered to developer@globalretirementfundsinc.com — form messages are
+// delivered to that inbox (change it in the Web3Forms dashboard, not here).
 const WEB3FORMS_ACCESS_KEY = '9d3208d6-fc22-49b5-b4a7-c7f697d66778'
 
 function Contact() {
